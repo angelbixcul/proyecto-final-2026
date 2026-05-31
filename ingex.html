@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Existencias de Motocicletas</title>
+  <style>
+    /* Estilos generales y paleta premium */
+    body { 
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+      background-color: #121212; 
+      color: #e0e0e0;
+      margin: 40px auto;
+      max-width: 1350px;
+      padding: 0 20px;
+      line-height: 1.6;
+    }
+
+    /* Diseño elegante para el título principal */
+    h1 { 
+      text-align: center;
+      color: #ffffff; 
+      font-weight: 300;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      margin-top: 20px;
+      margin-bottom: 50px;
+      position: relative;
+      padding-bottom: 15px;
+      font-size: 2.2em;
+    }
+
+    /* Línea de acento elegante debajo del título */
+    h1::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 150px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #ffb300, transparent);
+    }
+
+    h2 {
+      color: #ffffff;
+      font-weight: 400;
+      letter-spacing: 1px;
+      margin-top: 0;
+      margin-bottom: 25px;
+      border-bottom: 1px solid #333;
+      padding-bottom: 10px;
+      font-size: 1.25em;
+    }
+
+    /* Distribución de paneles */
+    .panel-control {
+      display: flex;
+      gap: 30px;
+      align-items: flex-start;
+    }
+
+    .panel-principal {
+      width: 65%;
+    }
+    
+    .panel-lateral {
+      width: 35%;
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
+
+    /* Tarjetas contenedoras */
+    section {
+      background-color: #1a1a1a;
+      padding: 28px;
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
+      border: 1px solid #262626;
+    }
+
+    /* Formularios */
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    #form-buscar {
+      flex-direction: row;
+    }
+    #form-buscar input {
+      flex: 1;
+    }
+
+    /* Inputs elegantes */
+    input { 
+      padding: 12px 16px; 
+      border: 1px solid #333; 
+      border-radius: 4px; 
+      background-color: #222;
+      color: #ffffff;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #ffb300;
+      background-color: #262626;
+      box-shadow: 0 0 8px rgba(255, 179, 0, 0.2);
+    }
+
+    /* Botones vivos y estilizados */
+    button { 
+      padding: 11px 22px; 
+      border: 1px solid #ffb300;
+      border-radius: 4px;
+      background-color: transparent;
+      color: #ffb300;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    button:hover {
+      background-color: #ffb300;
+      color: #121212;
+      box-shadow: 0 4px 12px rgba(255, 179, 0, 0.3);
+    }
+
+    /* Estilo de tablas de alto contraste */
+    table { 
+      width: 100%; 
+      border-collapse: collapse; 
+      margin-top: 20px;
+      background-color: #161616;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    th, td { 
+      padding: 14px 16px; 
+      border-bottom: 1px solid #262626; 
+      text-align: left; 
+    }
+
+    /* Encabezado con color más vivo */
+    th {
+      background-color: #0b0b0b;
+      color: #ffb300; 
+      border-bottom: 2px solid #ffb300;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+
+    td {
+      font-size: 14px;
+      color: #dcdcdc;
+    }
+
+    /* Efecto de iluminación en las filas */
+    tr {
+      transition: all 0.2s ease;
+      border-left: 3px solid transparent;
+    }
+
+    tr:hover {
+      background-color: #222222;
+      border-left: 3px solid #ffb300; /* Indicador vivo al hacer hover */
+    }
+
+    /* Ajuste para los botones de acción dentro de las tablas */
+    td button {
+      padding: 6px 12px;
+      font-size: 12px;
+      margin-right: 5px;
+      border-color: #555;
+      color: #e0e0e0;
+    }
+
+    td button:hover {
+      background-color: #e0e0e0;
+      color: #121212;
+      border-color: #e0e0e0;
+      box-shadow: 0 2px 6px rgba(255,255,255,0.2);
+    }
+
+    /* Contenedor animado del buscador */
+    #resultado-busqueda {
+      margin-top: 15px;
+      animation: slideDown 0.3s ease-out;
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 900px) {
+      .panel-control {
+        flex-direction: column-reverse; 
+      }
+      .panel-principal, .panel-lateral {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Existencias de Motocicletas</h1>
+
+  <div class="panel-control">
+    
+    <div class="panel-principal">
+      <section id="listar">
+        <h2>Listado Completo</h2>
+        <button id="btn-listar">Refrescar lista</button>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Modelo</th>
+              <th>Cantidad</th>
+              <th>Color</th>
+              <th>Año</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-vehiculos"></tbody>
+        </table>
+      </section>
+    </div>
+
+    <div class="panel-lateral">
+      
+      <section id="crear">
+        <h2>Añadir motocicleta</h2>
+        <form id="form-crear">
+          <input type="text" id="modelo" placeholder="Modelo" required />
+          <input type="text" id="cantidad" placeholder="Cantidad" required />
+          <input type="text" id="color" placeholder="Color" required />
+          <input type="number" id="anio" placeholder="Año" required />
+          <button type="submit">Añadir</button>
+        </form>
+      </section>
+
+      <section id="buscar">
+        <h2>Búsqueda Rápida</h2>
+        <form id="form-buscar">
+          <input type="number" id="buscar-id" placeholder="ID a buscar" required />
+          <button type="submit">Buscar</button>
+        </form>
+        
+        <div id="resultado-busqueda" style="display: none;">
+          <table>
+            <thead>
+              <tr>
+                <th>Modelo</th>
+                <th>Cantidad</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-resultado"></tbody>
+          </table>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <script>
+    const API = 'http://localhost:8080';
+
+    // --- 1. AÑADIR MOTOCICLETA ---
+    document.getElementById('form-crear').addEventListener('submit', async e => {
+      e.preventDefault();
+      const data = {
+        modelo: document.getElementById('modelo').value,
+        descripcion: document.getElementById('cantidad').value, // Sigue mapeado a 'descripcion' para tu backend en C++
+        color: document.getElementById('color').value,
+        anio: parseInt(document.getElementById('anio').value)
+      };
+      const resp = await fetch(`${API}/vehiculo`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      if (resp.ok) {
+        alert('Motocicleta añadida correctamente');
+        document.getElementById('form-crear').reset();
+        listarVehiculos();
+      } else {
+        alert('Error al añadir motocicleta');
+      }
+    });
+
+    // --- 2. LISTAR MOTOCICLETAS ---
+    document.getElementById('btn-listar').addEventListener('click', listarVehiculos);
+    
+    async function listarVehiculos() {
+      try {
+        const resp = await fetch(`${API}/vehiculos`);
+        const lista = await resp.json();
+        const tbody = document.getElementById('tbody-vehiculos');
+        tbody.innerHTML = '';
+        lista.forEach(v => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${v.id}</td>
+            <td>${v.modelo}</td>
+            <td>${v.descripcion}</td> 
+            <td>${v.color}</td>
+            <td>${v.anio}</td>
+            <td>
+              <button onclick="ver(${v.id})">Ver</button>
+              <button onclick="editar(${v.id})">Editar</button>
+              <button onclick="eliminar(${v.id})">Eliminar</button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } catch (error) {
+        console.error("Error obteniendo la lista general:", error);
+      }
+    }
+
+    // --- 3. BUSCAR POR ID ---
+    document.getElementById('form-buscar').addEventListener('submit', async e => {
+      e.preventDefault();
+      const id = document.getElementById('buscar-id').value;
+      const contenedorResultado = document.getElementById('resultado-busqueda');
+      const tbodyResultado = document.getElementById('tbody-resultado');
+      
+      try {
+        const resp = await fetch(`${API}/vehiculo/${id}`);
+        if (resp.ok) {
+          const v = await resp.json();
+          tbodyResultado.innerHTML = `
+            <tr>
+              <td>${v.modelo}</td>
+              <td>${v.descripcion}</td>
+              <td>
+                <button style="border-color:#ffb300; color:#ffb300;" onclick="editar(${v.id})">Modificar</button>
+              </td>
+            </tr>
+          `;
+          contenedorResultado.style.display = 'block';
+        } else {
+          contenedorResultado.style.display = 'none';
+          alert('No se encontró ninguna motocicleta con ese ID.');
+        }
+      } catch (error) {
+        console.error("Error en la búsqueda:", error);
+      }
+    });
+
+    // --- 4. ACCIONES (VER, ELIMINAR, EDITAR) ---
+    window.ver = async id => {
+      const resp = await fetch(`${API}/vehiculo/${id}`);
+      if (resp.ok) {
+        const v = await resp.json();
+        alert(`ID: ${v.id}\nModelo: ${v.modelo}\nCantidad: ${v.descripcion}\nColor: ${v.color}\nAño: ${v.anio}`);
+      } else {
+        alert('Motocicleta no encontrada');
+      }
+    };
+
+    window.eliminar = async id => {
+      if (!confirm('¿Seguro que desea eliminar el registro de esta motocicleta?')) return;
+      const resp = await fetch(`${API}/vehiculo/${id}`, { method: 'DELETE' });
+      if (resp.ok) {
+        alert('Registro eliminado');
+        listarVehiculos();
+        document.getElementById('resultado-busqueda').style.display = 'none'; 
+      } else {
+        alert('Error al eliminar');
+      }
+    };
+
+    window.editar = async id => {
+      const respGet = await fetch(`${API}/vehiculo/${id}`);
+      if (!respGet.ok) { return alert('No se pudo obtener datos de la motocicleta'); }
+      const v = await respGet.json();
+      
+      const modelo = prompt('Modelo:', v.modelo);
+      const cantidad = prompt('Cantidad:', v.descripcion);
+      const color = prompt('Color:', v.color);
+      const anio = parseInt(prompt('Año:', v.anio));
+      
+      if(modelo && cantidad && color && anio) {
+        const data = { 
+          modelo: modelo, 
+          descripcion: cantidad, 
+          color: color, 
+          anio: anio 
+        };
+        const respPut = await fetch(`${API}/vehiculo/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        if (respPut.ok) {
+          alert('Registro actualizado');
+          listarVehiculos();
+          
+          const contenedorBuscador = document.getElementById('resultado-busqueda');
+          if (contenedorBuscador.style.display === 'block') {
+             document.getElementById('form-buscar').dispatchEvent(new Event('submit'));
+          }
+        } else {
+          alert('Error al actualizar');
+        }
+      }
+    };
+
+    // Cargar lista al iniciar
+    listarVehiculos();
+  </script>
+</body>
+</html>
